@@ -1,18 +1,18 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-//E - рёбра, V - вершины
+//E - Г°ВёГЎГ°Г , V - ГўГҐГ°ГёГЁГ­Г»
 typedef long long ll;
 const ll maxV = 1e5 + 5, maxE = maxV * 4;
-const bool focus = true;  // ориентированность | неориентированность графа.
-const bool weighted = false; // взвешенность рёбер
+const bool focus = true;
+const bool weighted = false;
 ll last[maxV], previous[maxE], EdgeStart[maxE], EdgeFinish[maxE], EdgeWeight[maxE];
 ll dist[maxV], c;
 ll V, E;
 
 void add(ll from, ll to, ll weight)
 {
-	previous[++c] = last[from]; last[from] = c;          // Добавляем новое ребро в эту вершину, значит последнее ребро до добавления становится предпоследним предыдущим нашему добавленному, а последнее - добавленное.
+	previous[++c] = last[from]; last[from] = c;         
 	EdgeStart[c] = from; EdgeFinish[c] = to; EdgeWeight[c] = weight;
 }
 
@@ -47,7 +47,7 @@ int main()
 	
 	for(ll i = 1; i <= V; i++)
 	{
-		cout << "Все рёбра, выходящие из вершины " << i << ": " << endl;
+		cout << "Р РµР±СЂС‹С€РєРё, РІС‹С…РѕРґСЏС‰РёРµ РёР· РІРµСЂС€РёРЅС‹ " << i << ": " << endl;
 		for(ll j = last[i]; j; j = previous[j])
 		{
 			cout << i << "->" << EdgeFinish[j];
