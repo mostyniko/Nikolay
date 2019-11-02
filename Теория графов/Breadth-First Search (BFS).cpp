@@ -50,10 +50,10 @@ int main()
 	{
 		if(dist[i] != inf)
 		{
-			cout << "Расстояние до вершины  " << i << " равно " << dist[i] << endl;
+			cout << "Р Р°СЃС‚РѕСЏРЅРёРµ РґРѕ РІРµСЂС€РёРЅС‹  " << i << " СЂР°РІРЅРѕ " << dist[i] << endl;
 			string way = to_string(i);
 			for(ll j = path[i]; j; j = path[j]) way = to_string(j) + "->" + way;
-			cout << "Путь: " << way << endl;
-		} else cout << "До вершины " << i << " добраться невозможно" << endl;
+			cout << "РџСѓС‚СЊ: " << way << endl;
+		} else cout << "Р”Рѕ РІРµСЂС€РёРЅС‹ " << i << " РЅРµРІРѕР·РјРѕР¶РЅРѕ РґРѕР±СЂР°С‚СЊСЃСЏ" << endl;
 	}
 }
