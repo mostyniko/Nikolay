@@ -1,0 +1,49 @@
+#include <bits/stdC++.h>
+#define INF 1e18 + 1
+using namespace std;
+
+typedef long long ll;
+const ll maxV = 1e4 + 1;
+ll dist[maxV][maxV];
+ll N, M;
+
+int main()
+{
+	setlocale(LC_ALL, "Rus");
+	ios_base::sync_with_stdio(false);
+	freopen("input.txt", "r", stdin);
+	cin.tie(0);
+	
+	cin >> N >> M;
+	
+	for(int i = 0; i < N; i++)
+		for(int j = 0; j < N; j++)
+			dist[i][j] = INF;
+	for(int i = 0; i < N; i++) dist[i][i] = 0;
+	
+	for(int i = 0; i < M; i++)
+	{
+		ll from, to, weight;
+		cin >> from >> to >> weight;
+		from--; to--;	
+		dist[from][to] = dist[to][from] = weight;
+	}
+	
+	for(int k = 0; k < N; k++) {
+		for(int i = 0; i < N; i++) {
+			for(int j = 0; j < N; j++) {
+				if(dist[i][k] != INF && dist[k][j] != INF) {
+					dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+				}
+			}
+		}
+	}
+ 	while(true) {
+ 		ll first, second;
+		 cin >> first;
+		 if(first) cin >> second;
+		 else exit(0);
+		 cout << "Distance between " << first << " and " << second << " = " << dist[first - 1][second - 1] << endl;
+	 }
+
+}
