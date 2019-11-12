@@ -1,0 +1,58 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+
+
+
+
+typedef long long ll;
+enum color { WHITE = 0, GREY = 1, BLACK = 2 };
+const ll maxV = 1e5 + 5, maxE = maxV * 4;
+ll previous[maxE], last[maxV], edgeStart[maxE], edgeFinish[maxE], c;
+short color[maxV];
+vector<ll> order;
+ll N, M;
+
+void dfs(ll current, ll prev)
+{
+	color[current] = GREY;
+	for(int i = last[current]; i; i = previous[i])
+	{
+	  
+		if(edgeFinish[i] != prev)
+		{			if(color[edgeFinish[i]] == GREY)
+			{
+				cout << "No Way!";
+				exit(0);
+			} else if(!color[edgeFinish[i]]) dfs(edgeFinish[i], current);
+		}
+	}
+	
+	order.push_back(current);
+	color[current] = 2;
+}
+
+void add(ll from, ll to)
+{
+	previous[++c] = last[from]; last[from] = c;
+	edgeStart[c] = from; edgeFinish[c] = to;
+}
+
+int main()
+{
+	std::ios_base::sync_with_stdio(false);
+	freopen("input.txt", "r", stdin);
+	cin >> N >> M;
+	for(int i = 0; i < M; i++)
+	{
+		ll a, b;
+		cin >> a >> b;
+		add(a, b);
+	}
+	
+	for(int i = 1; i <= N; i++)
+		if(!color[i]) dfs(i, -1);
+	reverse(order.begin(), order.end());
+	
+	for(int i = 0; i < order.size(); i++) cout << order[i] << " ";
+}
