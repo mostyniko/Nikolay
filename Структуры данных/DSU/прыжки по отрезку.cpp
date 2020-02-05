@@ -35,8 +35,7 @@ void process(int l, int r, int c) {
 		ans[END] = c;
 		union_sets(START, END);
 		END = e[find_set(END + 1)];
-		// END+1, якобы следующий элемент, но информация, где к нему ближайший неокрашенный
-		// хранится в лидере, т.е. find_set(END+1).
+		// END+1 is closest uncolored idx after processing END, but information is situated in find_set(END+1).
 	}
 }
 
