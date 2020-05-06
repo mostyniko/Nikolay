@@ -1,81 +1,54 @@
-/* Double polynomial hash structure.
-	DONT FORGET TO: 
-	1. _hash::base = generate();
-	2. after every string update, update also POW.
-	3. operator(int l, int r, int POW).
+/* Эта структура в решении задач из этого раздела не использовалась, но обладает многими приемуществами.
+   1. Ctrl C + Ctrl V и ничего писать не надо.
+   2. Удобный оператор (), который выделяет чистый хеш между прочим.
+   3. Низкая вероятность коллизиии, из-за двух взаимно простых модулей эквивалентных одному 10^27.
+   4. Устойчивость к анти-хеш тестам опять же из-за двойного модуля.
+   
+   Не забудьте:
+   1) initialize() в начале программы, оно генерит множитель полинома и заполняет pow1 и pow2.
+   2) отнимать числа по простому модуля формулой (a + mod - b) % mod.
+   
+   Вот пример заполнения хеша:
+   { 0, s[0], s[0]*p + s[1], s[0]*p^2 + s[1] * p + s[2], ...}
 */
 
-
-
-typedef unsigned long long ull;
-struct _hash {
-	static const ull mod = 1e9+123;
-	static ull base;
-	static vector<int> pow1;
-	static vector<ull> pow2;
+typedef long long ll;
+const int maxLen = 200001;
+struct PHash {
+	static const ll mod = 1e9 + 321;
+	static vector<ll> pow1, pow2;
+	static ll base;
+	int sz;
+	vector<ll> h1, h2;
 	
-	
-	vector<int> pref1;
-	vector<ull> pref2;
-	
-	_hash(const string& s) {
-		while(pow1.size() < s.size() + 1) pow1.push_back((1LL * pow1.back() * base) % mod);
-		while(pow2.size() < s.size() + 1) pow2.push_back(pow2.back() * base);
-		
-		pref1.resize(s.size());
-		pref2.resize(s.size());
-		
-		for(int i = 0; i < s.size(); i++) {
-			pref1[i] = ((s[i] + 1LL) * pow1[i]) % mod;
-			pref2[i] = (s[i] + 1LL) * pow2[i];
-			
-			if(i) {
-				pref1[i] += pref1[i-1];
-				pref2[i] += pref2[i-1];
-				pref1[i] %= mod;
-			}
+	PHash(const string& s) {
+		sz = s.size();
+		h1.resize(sz + 1); h2.resize(sz + 1);
+		for(int i = 0; i < sz; i++) {
+			h1[i+1] = (h1[i] * base + s[i]) % mod;
+			h2[i+1] = h2[i] * base + s[i];
 		}
 	}
 	
-	
-	pair<int, ull> operator()(const int l, const int r, const int POW) const {
-		int h1 = pref1[r];
-		if(l) h1 -= pref1[l-1];
-		if(h1 < 0) h1 += mod;
-		ull h2 = pref2[r];
-		if(l) h2 -= pref2[l-1];
-		
-		return { (1LL * h1 * pow1[POW - l]) % mod, h2 * pow2[POW - l]};	
-	}
-	
-	void operator+=(const string& s) {
-		int needed_pow = s.size() + pref1.size() + 1;
-		while(pow1.size() < needed_pow) pow1.push_back((1LL * pow1.back() * base) % mod);
-		while(pow2.size() < needed_pow) pow2.push_back(pow2.back() * base);
-		
-		for(int i = 0; i < s.size(); i++) {
-			pref1.push_back(((s[i] + 1LL) * pow1[pref1.size()]) % mod);
-			pref2.push_back((s[i] + 1LL) * pow2[pref2.size()]);
-			
-			if(pref1.size() > 1) {
-				pref1[pref1.size() - 1] += pref1[pref1.size() - 2];
-				pref2[pref2.size() - 1] += pref2[pref2.size() - 2];
-				pref1[pref1.size() - 1] %= mod;
-			}
-		}
+	pair<ll, ll> operator()(const int l, const int r) const {
+		return {(h1[r+1] + mod - (h1[l] * pow1[r - l + 1]) % mod) % mod, h2[r+1] - h2[l] * pow2[r - l + 1]};
 	}
 };
 
-vector<int> _hash::pow1{1};
-vector<ull> _hash::pow2{1};
-
-ull generate() {
+void initialize() {
 	auto seed = chrono::high_resolution_clock::now().time_since_epoch().count();
 	mt19937 mt_rand(seed);
-	int x = uniform_int_distribution<ull>(257, _hash::mod)(mt_rand);
-	return (x%2)? x : x-1;
+	PHash::base = uniform_int_distribution<ll>(257, PHash::mod)(mt_rand);
+	
+	for(int i = 1; i < maxLen; i++) {
+		PHash::pow1[i] = (PHash::pow1[i-1] * PHash::base) % PHash::mod;
+		PHash::pow2[i] = (PHash::pow2[i-1] * PHash::base);
+	}
 }
-ull _hash::base = (ull)1e9+7;
-int POW = 0;
 
+ll PHash::base = (ll)1e9+7;
+vector<ll> PHash::pow1(maxLen, 1), PHash::pow2(maxLen, 1);
 
+int main() {
+	initialize();
+}
