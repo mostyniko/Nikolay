@@ -1,5 +1,7 @@
 // z-func
 
+// better use hashes z-func is shit
+
 #include <bits/stdc++.h>
 using namespace std;
 
